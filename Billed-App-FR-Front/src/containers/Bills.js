@@ -65,6 +65,7 @@ export default class {
 
 
     const modal = $("#modaleFile");
+    console.log(modal)
     modal.find(".modal-body")
       .html(`<div style='text-align: center;' class="bill-proof-container">
               <img width=${imgWidth} src=${billUrl} alt="Bill" /></div>`)
@@ -72,6 +73,7 @@ export default class {
     if (billUrl.includes("null")) {
       this.handleBillErr()
     }
+
 
     // $('#modaleFile').find(".modal-body")
     //   .html(`<div style='text-align: center;' class="bill-proof-container">
