@@ -90,9 +90,6 @@ describe('Given I am connected as an Admin', () => {
       expect(screen.getByTestId(`open-billBeKy5Mo4jkmdfPGYpTxZ`)).toBeTruthy()
     })
   })
-
-  // Test des lignes 158 à 161, je passe dessus pour l'instant.
-
   describe('When I am on Dashboard page and I click 2 times on arrow', () => {
     test('Then, tickets list should be closed, and cards should be hidden', async () => {
       // Setup

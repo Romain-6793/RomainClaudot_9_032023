@@ -3,9 +3,7 @@ import { formatDate, formatStatus } from "../app/format.js"
 import BillsUI from '../views/BillsUI.js'
 import Logout from "./Logout.js"
 
-
-// Why is the class unnamed ?
-// Where is the default export ?
+// How is the store linked with Store.js ?
 
 export default class {
   constructor({ document, onNavigate, store, localStorage }) {
@@ -42,9 +40,7 @@ export default class {
     modal.find(".modal-body").html(`<div style='text-align: center;'>${BillsUIErr}</div>`);
     modal.find(".vertical-navbar").addClass("vertical-navbar-hidden");
     modal.show();
-    modal.hide();
 
-    return BillsUIErr
   }
 
   handleClickIconEye = (icon) => {
@@ -58,8 +54,6 @@ export default class {
     console.log(icon)
     console.log(billUrl)
 
-    // const billName = $('#file-name-admin').attr("data-bill-filename")
-
     // The following lines are written with jQuery, it modifies the content of a modal and displays it
 
     // First, the element with the ID "modaleFile" is selected, then are searched every element 
@@ -69,34 +63,23 @@ export default class {
     // Finally, we display the modal element, that was masked before, 
     // by calling the modal('show') method on the selected element with the "modaleFile" ID.
 
-    $('#modaleFile').find(".modal-body")
+
+    const modal = $("#modaleFile");
+    modal.find(".modal-body")
       .html(`<div style='text-align: center;' class="bill-proof-container">
-    <img width=${imgWidth} src=${billUrl} alt="Bill" /></div>`)
-    $('#modaleFile').modal('show')
+              <img width=${imgWidth} src=${billUrl} alt="Bill" /></div>`)
+    modal.show();
     if (billUrl.includes("null")) {
       this.handleBillErr()
     }
 
-    // No jQuery Version
-
-    // const modaleFile = document.querySelector('#modaleFile');
-
-    // const modalBody = modaleFile.querySelector('.modal-body');
-
-    // const container = document.createElement('div');
-    // container.classList.add('bill-proof-container');
-    // container.style.textAlign = 'center';
-
-    // const image = document.createElement('img');
-    // image.width = imgWidth;
-    // image.src = billUrl;
-    // image.alt = 'Bill';
-
-    // container.appendChild(image);
-    // modalBody.appendChild(container);
-
-    // modaleFile.classList.add('show');
-
+    // $('#modaleFile').find(".modal-body")
+    //   .html(`<div style='text-align: center;' class="bill-proof-container">
+    // <img width=${imgWidth} src=${billUrl} alt="Bill" /></div>`)
+    // $('#modaleFile').modal('show')
+    // if (billUrl.includes("null")) {
+    //   this.handleBillErr()
+    // }
   }
 
   getBills = () => {

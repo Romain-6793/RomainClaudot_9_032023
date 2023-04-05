@@ -42,7 +42,7 @@ export default () => {
     if (pathname === ROUTES_PATH['Login']) {
       rootDiv.innerHTML = ROUTES({ pathname })
       console.log(rootDiv)
-      document.body.style.backgroundColor = "pink"
+      document.body.style.backgroundColor = "purple"
       // when you log out, and you go back to Login
       new Login({ document, localStorage, onNavigate, PREVIOUS_LOCATION, store })
     } else if (pathname === ROUTES_PATH['Bills']) {
