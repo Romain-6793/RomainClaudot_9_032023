@@ -13,7 +13,6 @@ import { screen, waitFor } from "@testing-library/dom";
 import router from "../app/Router.js";
 
 
-
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
     test("Then bill icon in vertical layout should be highlighted", async () => {
@@ -60,7 +59,11 @@ describe("Given I am connected as an employee", () => {
             status: "accepted",
             // add other relevant properties here
           },
-
+          {
+            date: "rmflkùgldksùmfgk",
+            status: "accepted",
+            // add other relevant properties here
+          },
         ])
       };
       const onNavigate = (pathname) => {
@@ -73,20 +76,23 @@ describe("Given I am connected as an employee", () => {
 
       const formattedBills = [{
         date: "1 Jan. 22", status: "Accepté",
-      }, { date: "2 Fév. 22", status: "En attente", }];
+      }, { date: "2 Fév. 22", status: "En attente", }, { date: "rmflkùgldksùmfgk", status: "Accepté", }];
 
       // call the function being tested
       const getBills = await billManager.getBills();
+      // expect(getBills[2]).toEqual(formattedBills[0]);
+
 
       // assert that the function returns an array
       expect(Array.isArray(getBills)).toBe(true);
 
       // assert that the array has the same length as the test data
-      expect(getBills.length).toBe(2);
+      expect(getBills.length).toBe(3);
 
       // assert that each bill has a formatted date and status
       expect(getBills[0]).toEqual(formattedBills[1]);
       expect(getBills[1]).toEqual(formattedBills[0]);
+      expect(getBills[2]).toEqual(formattedBills[2]);
 
       // assert that the store's bills and list methods were called
       expect(mockStore.bills).toHaveBeenCalled();
@@ -112,7 +118,7 @@ describe("Given I am connected as an employee", () => {
 
       });
     });
-    describe("When handleIconEye is called", () => {
+    describe("When handleClickIconEye is called", () => {
       test("Then a modal window should be open", () => {
 
         const onNavigate = (pathname) => {

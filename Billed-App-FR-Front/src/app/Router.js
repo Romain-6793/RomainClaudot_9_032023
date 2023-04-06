@@ -19,7 +19,6 @@ export default () => {
 
   // Down below we have the conditional render depending on the route used.
 
-  console.log(window.history)
 
   window.onNavigate = (pathname) => {
 
@@ -41,7 +40,6 @@ export default () => {
 
     if (pathname === ROUTES_PATH['Login']) {
       rootDiv.innerHTML = ROUTES({ pathname })
-      console.log(rootDiv)
       document.body.style.backgroundColor = "purple"
       // when you log out, and you go back to Login
       new Login({ document, localStorage, onNavigate, PREVIOUS_LOCATION, store })
@@ -69,7 +67,6 @@ export default () => {
       })
     } else if (pathname === ROUTES_PATH['NewBill']) {
       rootDiv.innerHTML = ROUTES({ pathname, loading: true })
-      console.log(rootDiv)
       // Here, an instance of NewBill is created just once and not in a method
       new NewBill({ document, onNavigate, store, localStorage })
       const divIcon1 = document.getElementById('layout-icon1')
@@ -78,16 +75,15 @@ export default () => {
       divIcon2.classList.add('active-icon')
     } else if (pathname === ROUTES_PATH['Dashboard']) {
       rootDiv.innerHTML = ROUTES({ pathname, loading: true })
-      console.log(rootDiv)
       const bills = new Dashboard({ document, onNavigate, store, bills: [], localStorage })
       bills.getBillsAllUsers().then(bills => {
         rootDiv.innerHTML = DashboardUI({ data: { bills } })
-        console.log(rootDiv)
+
         new Dashboard({ document, onNavigate, store, bills, localStorage })
         // Once again new Dashboard is created twince, once outside and once inside the method
       }).catch(error => {
         rootDiv.innerHTML = ROUTES({ pathname, error })
-        console.log(rootDiv)
+
       })
     }
   }
@@ -102,7 +98,6 @@ export default () => {
     if (window.location.pathname === "/" && !user) {
       // when after a logout, you click on previous.
       rootDiv.innerHTML = ROUTES({ pathname: window.location.pathname })
-      console.log(rootDiv)
     }
     else if (user) {
       document.body.style.backgroundColor = "green"
@@ -120,7 +115,6 @@ export default () => {
   } else if (window.location.hash !== "") {
     if (window.location.hash === ROUTES_PATH['Bills']) {
       rootDiv.innerHTML = ROUTES({ pathname: window.location.hash, loading: true })
-      console.log(rootDiv)
       const divIcon1 = document.getElementById('layout-icon1')
       const divIcon2 = document.getElementById('layout-icon2')
       divIcon1.classList.add('active-icon')
@@ -128,7 +122,7 @@ export default () => {
       const bills = new Bills({ document, onNavigate, store, localStorage })
       bills.getBills().then(data => {
         rootDiv.innerHTML = BillsUI({ data })
-        console.log(rootDiv)
+
         const divIcon1 = document.getElementById('layout-icon1')
         const divIcon2 = document.getElementById('layout-icon2')
         divIcon1.classList.add('active-icon')
@@ -136,11 +130,10 @@ export default () => {
         new Bills({ document, onNavigate, store, localStorage })
       }).catch(error => {
         rootDiv.innerHTML = ROUTES({ pathname: window.location.hash, error })
-        console.log(rootDiv)
+
       })
     } else if (window.location.hash === ROUTES_PATH['NewBill']) {
       rootDiv.innerHTML = ROUTES({ pathname: window.location.hash, loading: true })
-      console.log(rootDiv)
       new NewBill({ document, onNavigate, store, localStorage })
       const divIcon1 = document.getElementById('layout-icon1')
       const divIcon2 = document.getElementById('layout-icon2')
@@ -148,15 +141,14 @@ export default () => {
       divIcon2.classList.add('active-icon')
     } else if (window.location.hash === ROUTES_PATH['Dashboard']) {
       rootDiv.innerHTML = ROUTES({ pathname: window.location.hash, loading: true })
-      console.log(rootDiv)
       const bills = new Dashboard({ document, onNavigate, store, bills: [], localStorage })
       bills.getBillsAllUsers().then(bills => {
         rootDiv.innerHTML = DashboardUI({ data: { bills } })
-        console.log(rootDiv)
+
         new Dashboard({ document, onNavigate, store, bills, localStorage })
       }).catch(error => {
         rootDiv.innerHTML = ROUTES({ pathname: window.location.hash, error })
-        console.log(rootDiv)
+
       })
     }
   }
