@@ -48,20 +48,25 @@ export const card = (bill) => {
     firstAndLastNames.split('.')[1] : firstAndLastNames
 
   return (`
-    <div class='bill-card' id='open-bill${bill.id}' data-testid='open-bill${bill.id}'>
-      <div class='bill-card-name-container'>
-        <div class='bill-card-name'> ${firstName} ${lastName} </div>
-        <span class='bill-card-grey'> ... </span>
-      </div>
-      <div class='name-price-container'>
-        <span> ${bill.name} </span>
-        <span> ${bill.amount} € </span>
-      </div>
-      <div class='date-type-container'>
-        <span> ${formatDate(bill.date)} </span>
-        <span> ${bill.type} </span>
-      </div>
-    </div>
+  <div class="card-wrapper">
+    <label for='${bill.id}-check' class="card-label">
+      <div class='bill-card' id='open-bill${bill.id}' data-testid='open-bill${bill.id}'>
+        <div class='bill-card-name-container'>
+          <div class='bill-card-name'> ${firstName} ${lastName} </div>
+          <span class='bill-card-grey'> ... </span>
+          </div>
+          <div class='name-price-container'>
+          <span> ${bill.name} </span>
+          <span> ${bill.amount} € </span>
+          </div>
+        <div class='date-type-container'>
+          <span> ${formatDate(bill.date)} </span>
+          <span> ${bill.type} </span>
+        </div>
+        </div>
+    </label>
+    <input type=checkbox id="${bill.id}-check" class="card-checkbox">
+  </div>
   `)
 }
 
@@ -120,15 +125,35 @@ export default class {
 
   handleEditTicket(e, bill, bills) {
 
-    bills.forEach(b => {
-      $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })
-    })
-    $(`#open-bill${bill.id}`).css({ background: '#2A2B35' })
-    $('.dashboard-right-container div').html(DashboardFormUI(bill))
-    $('.vertical-navbar').css({ height: '150vh' })
-    $('#icon-eye-d').click(this.handleClickIconEye)
-    $('#btn-accept-bill').click((e) => this.handleAcceptSubmit(e, bill))
-    $('#btn-refuse-bill').click((e) => this.handleRefuseSubmit(e, bill))
+
+    // Le premier this.id est undefined, puis this.id est toujours égal au bill.id précédent
+    // this.id === bill.id seulement quand je change de liste puis reviens sur le même item
+    // c'est là qu'est la clé
+    // this.id === bill.id aussi quand je clique 2 fois sur le même item de la même liste
+
+    const isChecked = document.getElementById(`${bill.id}-check`).checked
+
+    if (!isChecked) {
+      // The following lines purpose is to uncheck everything that is not the current bill
+      $(`#${bill.id}-check`).on('change', function () {
+        $(`.card-checkbox`).not(this).prop('checked', false);
+      });
+      bills.forEach(b => {
+        $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })
+      })
+      $(`#open-bill${bill.id}`).css({ background: '#2A2B35' })
+      $('.dashboard-right-container div').html(DashboardFormUI(bill))
+      $('.vertical-navbar').css({ height: '150vh' })
+      this.counter++
+    }
+    else {
+
+      $(`#open-bill${bill.id}`).css({ background: '#0D5AE5' })
+
+      $('.dashboard-right-container div').html(`
+        <div id="big-billed-icon" data-testid="big-billed-icon"> ${BigBilledIcon} </div>
+      `)
+    }
   }
 
   handleAcceptSubmit = (e, bill) => {
