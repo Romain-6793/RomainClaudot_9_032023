@@ -90,26 +90,53 @@ describe('Given I am connected as an Admin', () => {
       expect(screen.getByTestId(`open-billBeKy5Mo4jkmdfPGYpTxZ`)).toBeTruthy()
     })
   })
+
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
   describe('When I am on Dashboard page and I click 2 times on arrow', () => {
     test('Then, tickets list should be closed, and cards should be hidden', async () => {
       // Setup
+
+      // The index is for programmation use, since there are three status bill container, we use index + 1
+      // so it can be any of them
+
       const index = 0;
+
+      // We create a new instance of Dashboard
+
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname })
       }
       const dashboard = new Dashboard({
         document, onNavigate, store: null, bills: bills, localStorage: window.localStorage,
       })
+
+      // We set the HTML to DahboardUI, with the bills from fixtures to test
+      // Then we simulate each handleShowTickets function
+      // At last, we add event listeners on every icon and check if it triggers the function
+      // We finally check innerhtml to be empty as well as we check the arrow rotation
+
       document.body.innerHTML = DashboardUI({ data: { bills } });
       const handleShowTickets1 = jest.fn((e) => dashboard.handleShowTickets(e, bills, 1))
+      const handleShowTickets2 = jest.fn((e) => dashboard.handleShowTickets(e, bills, 2))
+      const handleShowTickets3 = jest.fn((e) => dashboard.handleShowTickets(e, bills, 3))
       const icon1 = screen.getByTestId('arrow-icon1')
+      const icon2 = screen.getByTestId('arrow-icon2')
+      const icon3 = screen.getByTestId('arrow-icon3')
 
       icon1.addEventListener('click', handleShowTickets1)
       userEvent.click(icon1)
       userEvent.click(icon1)
+      icon2.addEventListener('click', handleShowTickets2)
+      userEvent.click(icon2)
+      userEvent.click(icon2)
+      icon3.addEventListener('click', handleShowTickets3)
+      userEvent.click(icon3)
+      userEvent.click(icon3)
       // Assert
       expect(handleShowTickets1).toHaveBeenCalled()
-      expect(handleShowTickets1).toHaveBeenCalled()
+      expect(handleShowTickets2).toHaveBeenCalled()
+      expect(handleShowTickets3).toHaveBeenCalled()
       expect(icon1.style.transform).toBe('rotate(90deg)');
       expect(document.querySelector(`#status-bills-container${index + 1}`).innerHTML).toBe('');
     })
@@ -261,6 +288,40 @@ describe('Given I am connected as Admin and I am on Dashboard page and I clicked
       const modale = screen.getByTestId('modaleFileAdmin')
       expect(modale).toBeTruthy()
     })
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+
+    test("If billName is 'null', an error modal should appear", () => {
+
+      // Since handleBillErr displays the error modal, we check if it is called
+
+      // We create the dashboard instance
+
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname })
+      }
+      const dashboard = new Dashboard({
+        document,
+        onNavigate,
+        store: null,
+        bills,
+        localStorage: window.localStorage
+      });
+
+      // We spy on handleBillErr to see if it is triggered 
+
+      const handleBillErrMock = jest.spyOn(dashboard, "handleBillErr");
+
+      // We set the data-bill-filename attribute of billName to "null"
+
+      const billName = screen.getByTestId("bill-name")
+      billName.setAttribute("data-bill-filename", "null")
+
+      // We click on the icon to see if the function is called
+      dashboard.handleClickIconEye(billName);
+
+      expect(handleBillErrMock).toHaveBeenCalled();
+    });
   })
 })
 

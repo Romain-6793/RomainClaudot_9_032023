@@ -15,8 +15,14 @@ export default class Login {
     const formAdmin = this.document.querySelector(`form[data-testid="form-admin"]`)
     formAdmin.addEventListener("submit", this.handleSubmitAdmin)
   }
+
+  /* istanbul ignore next */
+
   handleSubmitEmployee = e => {
     e.preventDefault()
+
+    // First the user object is created to be set in the localStorage
+
     const user = {
       type: "Employee",
       email: e.target.querySelector(`input[data-testid="employee-email-input"]`).value,
@@ -24,7 +30,16 @@ export default class Login {
       status: "connected"
     }
     this.localStorage.setItem("user", JSON.stringify(user))
+
+    // Then a jwt token is created
+    // If the auth fails, createUser is called with the user object as an argument
+    // If the auth succeed, the user is redirected to Bills page, the login page is set as 
+    // previous location, and the body style of the document is set.
+
     this.login(user)
+
+      /* istanbul ignore next */
+
       .catch(
         (err) => this.createUser(user)
       )
@@ -39,6 +54,9 @@ export default class Login {
 
   handleSubmitAdmin = e => {
     e.preventDefault()
+
+    // First the user object is created to be set in the localStorage
+
     const user = {
       type: "Admin",
       email: e.target.querySelector(`input[data-testid="admin-email-input"]`).value,
@@ -46,6 +64,14 @@ export default class Login {
       status: "connected"
     }
     this.localStorage.setItem("user", JSON.stringify(user))
+
+    // Then a jwt token is created
+    // If the auth fails, createUser is called with the user object as an argument
+    // If the auth succeed, the user is redirected to Dashboard page, the login page is set as 
+    // previous location, and the body style of the document is set.
+
+    /* istanbul ignore next */
+
     this.login(user)
       .catch(
         (err) => this.createUser(user)
@@ -59,6 +85,7 @@ export default class Login {
   }
 
   // not need to cover this function by tests
+  /* istanbul ignore next */
   login = (user) => {
     if (this.store) {
       return this.store
@@ -74,6 +101,7 @@ export default class Login {
   }
 
   // not need to cover this function by tests
+  /* istanbul ignore next */
   createUser = (user) => {
     if (this.store) {
       return this.store

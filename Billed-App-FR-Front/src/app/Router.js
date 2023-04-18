@@ -28,8 +28,6 @@ export default () => {
     // The use of window.history.pushState is to push a new entry into the browser's history 
     // and as a result, update the displayed URL without refreshing the page.
 
-    // "#0E5AE5"
-
     window.history.pushState(
       {},
       pathname,
@@ -40,7 +38,7 @@ export default () => {
 
     if (pathname === ROUTES_PATH['Login']) {
       rootDiv.innerHTML = ROUTES({ pathname })
-      document.body.style.backgroundColor = "purple"
+      document.body.style.backgroundColor = "#0E5AE5"
       // when you log out, and you go back to Login
       new Login({ document, localStorage, onNavigate, PREVIOUS_LOCATION, store })
     } else if (pathname === ROUTES_PATH['Bills']) {
@@ -100,7 +98,7 @@ export default () => {
       rootDiv.innerHTML = ROUTES({ pathname: window.location.pathname })
     }
     else if (user) {
-      document.body.style.backgroundColor = "green"
+      document.body.style.backgroundColor = "#0E5AE5"
 
       onNavigate(PREVIOUS_LOCATION)
     }
@@ -110,7 +108,7 @@ export default () => {
 
   if (window.location.pathname === "/" && window.location.hash === "") {
     new Login({ document, localStorage, onNavigate, PREVIOUS_LOCATION, store })
-    document.body.style.backgroundColor = "red"
+    document.body.style.backgroundColor = "#0E5AE5"
     // default, when you launch live server / when you open the navigator
   } else if (window.location.hash !== "") {
     if (window.location.hash === ROUTES_PATH['Bills']) {

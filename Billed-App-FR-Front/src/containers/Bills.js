@@ -71,16 +71,19 @@ export default class {
         // The list function is called to get a snapshot of the bills
         .list()
         .then(snapshot => {
-          const bills = snapshot.sort((a, b) => new Date(b.date) - new Date(a.date)).map(doc => {
+          const bills = snapshot.sort((a, b) => new Date(a.date) - new Date(b.date)).map(doc => {
+            // const bills = snapshot.map(doc => {
             try {
               return {
                 ...doc,
                 date: formatDate(doc.date),
-                status: formatStatus(doc.status)
+                status: formatStatus(doc.status),
+                numberDate: Number(doc.date),
               }
-            } catch (e) {
+            } catch {
               // if for some reason, corrupted data was introduced, we manage here failing formatDate function
               // log the error and return unformatted date in that case
+              (err) => console.error(err)
               return {
                 ...doc,
                 date: doc.date,

@@ -20,9 +20,10 @@ const row = (bill) => {
 }
 
 const rows = (data) => {
+
   return (data && data.length) ? data.sort((a, b) => {
-    const keyA = (a.date)
-    const keyB = (b.date)
+    const keyA = (a.numberDate)
+    const keyB = (b.numberDate)
     if (keyA > keyB) return -1;
     if (keyA < keyB) return 1;
     return 0;

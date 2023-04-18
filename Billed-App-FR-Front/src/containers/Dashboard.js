@@ -125,7 +125,6 @@ export default class {
 
   handleEditTicket(e, bill, bills) {
 
-
     // Le premier this.id est undefined, puis this.id est toujours égal au bill.id précédent
     // this.id === bill.id seulement quand je change de liste puis reviens sur le même item
     // c'est là qu'est la clé
@@ -144,7 +143,9 @@ export default class {
       $(`#open-bill${bill.id}`).css({ background: '#2A2B35' })
       $('.dashboard-right-container div').html(DashboardFormUI(bill))
       $('.vertical-navbar').css({ height: '150vh' })
-      this.counter++
+      $('#icon-eye-d').click(this.handleClickIconEye)
+      $('#btn-accept-bill').click((e) => this.handleAcceptSubmit(e, bill))
+      $('#btn-refuse-bill').click((e) => this.handleRefuseSubmit(e, bill))
     }
     else {
 

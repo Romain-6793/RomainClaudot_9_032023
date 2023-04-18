@@ -64,8 +64,6 @@ class ApiEntity {
   }
 }
 
-
-
 // The store manages the different entities : user, users, bill, bills.
 // It manages as well the auth(login) and the ref
 
