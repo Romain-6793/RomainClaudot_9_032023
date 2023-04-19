@@ -125,11 +125,6 @@ export default class {
 
   handleEditTicket(e, bill, bills) {
 
-    // Le premier this.id est undefined, puis this.id est toujours égal au bill.id précédent
-    // this.id === bill.id seulement quand je change de liste puis reviens sur le même item
-    // c'est là qu'est la clé
-    // this.id === bill.id aussi quand je clique 2 fois sur le même item de la même liste
-
     const isChecked = document.getElementById(`${bill.id}-check`).checked
 
     if (!isChecked) {

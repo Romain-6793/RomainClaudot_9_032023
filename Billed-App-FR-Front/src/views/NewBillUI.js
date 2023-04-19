@@ -1,8 +1,14 @@
+import ErrorPage from './ErrorPage.js'
 import VerticalLayout from './VerticalLayout.js'
 
-export default () => {
+export default ({ error }) => {
+
+  if (error) {
+    return ErrorPage(error)
+  }
+
   return (` 
-    <div class='layout'>
+    <div class='layout' data-testid="layout">
       ${VerticalLayout(120)}
       <div class='content'>
         <div class='content-header'>

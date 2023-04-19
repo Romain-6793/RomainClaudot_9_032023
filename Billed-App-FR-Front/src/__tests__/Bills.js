@@ -11,7 +11,7 @@ import { ROUTES, ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import { screen, waitFor } from "@testing-library/dom";
 import router from "../app/Router.js";
-
+import mockStore, { mockedBills } from '../__mocks__/store';
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -29,7 +29,7 @@ describe("Given I am connected as an employee", () => {
       await waitFor(() => screen.getByTestId('icon-window'))
       const windowIcon = screen.getByTestId('icon-window')
 
-      //to-do write expect expression
+      /////////////////////////////////////////////////////////////
       expect(windowIcon.classList.contains('active-icon')).toBe(true);
 
     })
@@ -262,3 +262,82 @@ describe("Given I am connected as an employee", () => {
 
   })
 })
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+// GET integration test
+describe("Given I am a user connected as Employee", () => {
+
+  // jest.mock("../app/store", () => mockStore)
+
+  describe("When I navigate to Bills", () => {
+    test("fetches bills from mock API GET", async () => {
+
+      localStorage.setItem("user", JSON.stringify({ type: "Employee", email: "a@a" }));
+
+      const data = await mockedBills.list();
+      document.body.innerHTML = BillsUI({ data: data })
+
+      await waitFor(() => screen.getByText("Mes notes de frais"))
+
+      const title = await screen.getByText("Mes notes de frais")
+      const text = await screen.getByText("encore")
+
+      expect(title).toBeTruthy()
+      expect(text).toBeTruthy()
+
+    })
+    describe("When an error occurs on API", () => {
+      beforeEach(() => {
+        jest.spyOn(mockStore, "bills")
+        Object.defineProperty(
+          window,
+          'localStorage',
+          { value: localStorageMock }
+        )
+        window.localStorage.setItem('user', JSON.stringify({
+          type: 'Employee',
+          email: "a@a"
+        }))
+      })
+      test("fetches bills from an API and fails with 404 message error", async () => {
+
+        mockStore.bills.mockImplementationOnce(() => {
+          return {
+            list: () => {
+              return Promise.reject(new Error("Erreur 404"))
+            }
+          }
+        })
+
+        const html = BillsUI({ error: "Erreur 404" })
+        document.body.innerHTML = html
+        const message = await screen.getByText(/Erreur 404/)
+        expect(message).toBeTruthy()
+        await expect(mockStore.bills().list()).rejects.toThrow('Erreur 404')
+
+      })
+      test("fetches bills from an API and fails with 500 message error", async () => {
+
+        mockStore.bills.mockImplementationOnce(() => {
+          return {
+            list: () => {
+              return Promise.reject(new Error("Erreur 500"))
+            }
+          }
+        })
+
+        const html = BillsUI({ error: "Erreur 500" })
+        document.body.innerHTML = html
+        const message = await screen.getByText(/Erreur 500/)
+        expect(message).toBeTruthy()
+        await expect(mockStore.bills().list()).rejects.toThrow('Erreur 500')
+
+      })
+
+    })
+  })
+})
+
+
+

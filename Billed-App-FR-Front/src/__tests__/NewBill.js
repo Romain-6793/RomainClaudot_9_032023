@@ -2,16 +2,19 @@
  * @jest-environment jsdom
  */
 
-import { screen } from "@testing-library/dom"
+import { screen, waitFor } from "@testing-library/dom"
 import NewBillUI from "../views/NewBillUI.js"
 import NewBill from "../containers/NewBill.js"
-import { ROUTES } from "../constants/routes.js";
+import { ROUTES, ROUTES_PATH } from "../constants/routes.js";
+import { localStorageMock } from "../__mocks__/localStorage.js"
+import router from "../app/Router"
+import mockStore, { mockedBills } from "../__mocks__/store"
 
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
     test("Then ...", () => {
-      const html = NewBillUI()
+      const html = NewBillUI({ error: null })
       document.body.innerHTML = html
       //to-do write assertion
     })
@@ -46,8 +49,8 @@ describe("Given I am connected as an employee", () => {
           store: storeMock,
         });
 
-        // // here we call handleChangeFile, with a target value and a preventDefault, to simulate
-        // // the function with the value we set above
+        // here we call handleChangeFile, with a target value and a preventDefault, to simulate
+        // the function with the value we set above
 
         const mockHCF = jest.fn(newBill.handleChangeFile({
           target: inputMock,
@@ -114,7 +117,7 @@ describe("Given I am connected as an employee", () => {
 
         localStorage.setItem("user", JSON.stringify({ email: "test@test.com" }))
 
-        document.body.innerHTML = NewBillUI()
+        document.body.innerHTML = NewBillUI({ error: null })
 
         const preventDefaultMock = jest.fn();
 
@@ -139,4 +142,71 @@ describe("Given I am connected as an employee", () => {
     })
   })
 })
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+// POST integration test
+describe("Given I am a user connected as Employee", () => {
+  describe("When I submit a new document", () => {
+    test("it should create a file from mock API POST", async () => {
+
+      localStorage.setItem("user", JSON.stringify({ type: "Employee", email: "a@a" }));
+
+      document.body.innerHTML = NewBillUI({ error: null })
+
+      const createSpy = jest.spyOn(mockedBills, "create")
+      const postedFile = await mockedBills.create()
+
+      expect(createSpy).toHaveBeenCalledTimes(1)
+
+      expect(postedFile.fileUrl).toBe("https://localhost:3456/images/test.jpg")
+      expect(postedFile).toBeTruthy()
+
+    })
+    describe("When an error occurs on API", () => {
+      beforeEach(() => {
+        jest.spyOn(mockedBills, "create")
+        Object.defineProperty(
+          window,
+          'localStorage',
+          { value: localStorageMock }
+        )
+        window.localStorage.setItem('user', JSON.stringify({
+          type: 'Employee',
+          email: "a@a"
+        }))
+      })
+      test("fails to create file and throws error 404", async () => {
+
+        mockedBills.create.mockImplementationOnce(() => {
+          return Promise.reject(new Error("Erreur 404"))
+        })
+
+        const html = NewBillUI({ error: "Erreur 404" })
+        document.body.innerHTML = html
+        const message = await screen.getByText(/Erreur 404/)
+        expect(message).toBeTruthy()
+        await expect(mockedBills.create()).rejects.toThrow('Erreur 404')
+
+      })
+      test("fails to create file and throws error 500", async () => {
+
+        mockedBills.create.mockImplementationOnce(() => {
+          return Promise.reject(new Error("Erreur 500"))
+        })
+
+        const html = NewBillUI({ error: "Erreur 500" })
+        document.body.innerHTML = html
+        const message = await screen.getByText(/Erreur 500/)
+        expect(message).toBeTruthy()
+        await expect(mockedBills.create()).rejects.toThrow('Erreur 500')
+
+      })
+
+    })
+  })
+
+
+})
+
 

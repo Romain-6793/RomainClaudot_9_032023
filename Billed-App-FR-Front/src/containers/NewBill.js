@@ -17,9 +17,6 @@ export default class NewBill {
     new Logout({ document, localStorage, onNavigate })
   }
 
-  // Tester si je peux getByText l'extension "png", "jpg", "jpeg"
-  // Tester si je peux get l'email dans le localStorage ?
-
   handleChangeFile = e => {
     e.preventDefault()
     const rightExtension = e.target.value.includes(".png")
